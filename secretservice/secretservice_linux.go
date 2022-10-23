@@ -90,7 +90,7 @@ func (h Secretservice) Get(serverURL string) (string, string, error) {
 	
 	auth, err := GetAuthorizationToken(clientId, clientSecret)
 
-	return "muniker", auth.AccessToken, nil
+	return "muniker", auth.AccessToken, err
 }
 
 // Get access token from amazoncognito using client credentials.

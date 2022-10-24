@@ -2,7 +2,7 @@
 
 - [Overview](#overview)
 - [Docker Credential Helper + Authentication Proxy](#docker-credential-helper--authentication-proxy)
-- [API-Key/Access-Token + Authentication Proxy](#api-keyaccess-token--authentication-proxy)
+- [X-API-Key + Authentication Proxy](#x-api-key--authentication-proxy)
 
 ## Overview
 
@@ -56,7 +56,7 @@ docker push localhost:5043/myfirstimage
 ```
 
 
-## API-Key/Access-Token + Authentication Proxy
+## X-API-Key + Authentication Proxy
 1. Comment out line 47-50 in ./registry/auth/nginx.conf so that Basic authentication is not enforced.
 
 2. Edit ~/.docker/config.json to add a custom http-header. Replace <YOUR_ACCESS_TOKEN> with a valid minerva ACCESS_TOKEN.

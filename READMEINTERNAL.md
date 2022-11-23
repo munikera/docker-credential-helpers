@@ -94,3 +94,9 @@ docker image tag hello-world localhost:5043/myfirstimage
 ```sh
 docker push localhost:5043/myfirstimage
 ```
+
+
+**** For Window Setup *****
+The wincred file must be saved as *.exe file in order to run it.
+Copy the docker-crendential-wincred.exe file to "C:\Program Files\Docker\Docker\resources\bin"
+Access the docker config file with this path: ~\.docker\config.json

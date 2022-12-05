@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"net/url"
 	"strings"
-	// "errors"
+	"errors"
 
 	winc "github.com/danieljoos/wincred"
 	"github.com/docker/docker-credential-helpers/credentials"
@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
-	// "os"
+	"os"
 )
 
 type AuthResponse struct {
@@ -73,23 +73,23 @@ func (h Wincred) Get(serverURL string) (string, string, error) {
 	// 	}
 	// }
 	// return "", "", credentials.NewErrCredentialsNotFound()
-		return "huu-tri bui", "123456789 token", nil
+		// return "huu-tri bui", "123456789 token", nil
 
-	// clientId, okClientId := os.LookupEnv("CLIENT_ID")
+	clientId, okClientId := os.LookupEnv("CLIENT_ID")
 
-	// if !okClientId {
-	// 	return "", "", errors.New("env variable CLIENT_ID is not found")
-	// }
+	if !okClientId {
+		return "", "", errors.New("env variable CLIENT_ID is not found")
+	}
 
-	// clientSecret, okClientSecret := os.LookupEnv("CLIENT_SECRET")
+	clientSecret, okClientSecret := os.LookupEnv("CLIENT_SECRET")
 
-	// if !okClientSecret {
-	// 	return "", "", errors.New("env variable CLIENT_SECRET is not found")
-	// }
+	if !okClientSecret {
+		return "", "", errors.New("env variable CLIENT_SECRET is not found")
+	}
 	
-	// auth, err := GetAuthorizationToken(clientId, clientSecret)
+	auth, err := GetAuthorizationToken(clientId, clientSecret)
 
-	// return "muniker", auth.AccessToken, nil
+	return "muniker", auth.AccessToken, err
 }
 
 // Get access token from amazoncognito using client credentials.
@@ -206,6 +206,5 @@ func (h Wincred) List() (map[string]string, error) {
 
 	}
 	// Added a test field in resp object to check if the the file is updated
-	resp["test123"] = "test123"
 	return resp, nil
 }

@@ -53,28 +53,6 @@ func (h Wincred) Delete(serverURL string) error {
 // Modify GET function for windows
 // Get retrieves credentials from the windows credentials manager.
 func (h Wincred) Get(serverURL string) (string, string, error) {
-	// target, err := getTarget(serverURL)
-	// if err != nil {
-	// 	return "", "", err
-	// } else if target == "" {
-	// 	return "", "", credentials.NewErrCredentialsNotFound()
-	// }
-
-	// g, _ := winc.GetGenericCredential(target)
-	// if g == nil {
-	// 	return "", "", credentials.NewErrCredentialsNotFound()
-	// }
-
-	// for _, attr := range g.Attributes {
-	// 	if strings.Compare(attr.Keyword, "label") == 0 &&
-	// 		bytes.Compare(attr.Value, []byte(credentials.CredsLabel)) == 0 {
-
-	// 		return g.UserName, string(g.CredentialBlob), nil
-	// 	}
-	// }
-	// return "", "", credentials.NewErrCredentialsNotFound()
-		// return "huu-tri bui", "123456789 token", nil
-
 	clientId, okClientId := os.LookupEnv("CLIENT_ID")
 
 	if !okClientId {
@@ -205,6 +183,5 @@ func (h Wincred) List() (map[string]string, error) {
 		}
 
 	}
-	// Added a test field in resp object to check if the the file is updated
 	return resp, nil
 }

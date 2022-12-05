@@ -97,7 +97,7 @@ docker push localhost:5043/myfirstimage
 
 
 **** For Window Setup *****
-1. Open cmd.exe with Administrator priviledge.
+1. Open cmd.exe with Administrator privilege.
 
 1. Use `make` to build wincred credential helper. That will leave an executable in the `bin` directory inside the repository.
 

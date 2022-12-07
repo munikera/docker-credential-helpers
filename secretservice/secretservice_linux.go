@@ -12,7 +12,22 @@ import (
 	"unsafe"
 
 	"github.com/docker/docker-credential-helpers/credentials"
+
+	"net/http"
+	"net/url"
+	"strings"
+	"encoding/json"
+	"io/ioutil"
+	"os"
 )
+
+
+type AuthResponse struct {
+	AccessToken string `json:"access_token"`
+	IdToken string `json:"id_token"`
+	ExpiresIn int `json:"expires_in"`
+	TokenType string `json:"token_type"`
+}
 
 // Secretservice handles secrets using Linux secret-service as a store.
 type Secretservice struct{}
@@ -60,25 +75,51 @@ func (h Secretservice) Get(serverURL string) (string, string, error) {
 	if serverURL == "" {
 		return "", "", errors.New("missing server url")
 	}
-	var username *C.char
-	defer C.free(unsafe.Pointer(username))
-	var secret *C.char
-	defer C.free(unsafe.Pointer(secret))
-	server := C.CString(serverURL)
-	defer C.free(unsafe.Pointer(server))
 
-	err := C.get(server, &username, &secret)
-	if err != nil {
-		defer C.g_error_free(err)
-		errMsg := (*C.char)(unsafe.Pointer(err.message))
-		return "", "", errors.New(C.GoString(errMsg))
+	clientId, okClientId := os.LookupEnv("CLIENT_ID")
+
+	if !okClientId {
+		return "", "", errors.New("env variable CLIENT_ID is not found")
 	}
-	user := C.GoString(username)
-	pass := C.GoString(secret)
-	if pass == "" {
-		return "", "", credentials.NewErrCredentialsNotFound()
+
+	clientSecret, okClientSecret := os.LookupEnv("CLIENT_SECRET")
+
+	if !okClientSecret {
+		return "", "", errors.New("env variable CLIENT_SECRET is not found")
 	}
-	return user, pass, nil
+	
+	auth, err := GetAuthorizationToken(clientId, clientSecret)
+
+	return "muniker", auth.AccessToken, err
+}
+
+// Get access token from amazoncognito using client credentials.
+func GetAuthorizationToken(clientId string, clientSecret string) (*AuthResponse, error) {	
+	var cognitoAuthEndpoint = "https://azad.auth.us-west-2.amazoncognito.com/oauth2/token"
+
+	data := url.Values{}
+	data.Set("client_id", clientId)
+	data.Set("client_secret", clientSecret)
+	data.Set("grant_type", "client_credentials")
+	encodedData := data.Encode()
+
+	response, httpErr := http.Post(cognitoAuthEndpoint, "application/x-www-form-urlencoded", strings.NewReader(encodedData))
+	
+	if httpErr != nil {
+		return nil, httpErr
+	}
+	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body) 
+
+	var authResponse AuthResponse
+	
+	unmarshalErr := json.Unmarshal(body, &authResponse)
+	if unmarshalErr != nil {
+		return nil, httpErr
+    }
+
+	return &authResponse, nil
 }
 
 // List returns the stored URLs and corresponding usernames for a given credentials label

@@ -94,3 +94,50 @@ docker image tag hello-world localhost:5043/myfirstimage
 ```sh
 docker push localhost:5043/myfirstimage
 ```
+
+
+**** For Window Setup *****
+1. Open cmd.exe with Administrator privilege.
+
+1. Use `make` to build wincred credential helper. That will leave an executable in the `bin` directory inside the repository.
+
+```sh
+make wincred
+```
+
+2. Put the binary in your `$PATH`, so Docker can find it.
+
+```sh
+for /f "delims=" %i in ('where docker-credential-wincred') do set docker_path=%i
+copy bin\build\docker-credential-wincred.exe "%docker_path%"
+Overwirte : Yes
+```
+
+3. Disconnect from VPN and unset proxy. This is required for the local nginx instance to succesfully send a request to the minerva auth-api.
+```sh
+set https_proxy=
+set http_proxy=
+set HTTPS_PROXY=
+set HTTP_PROXY=
+set ALL_PROXY=
+set all_proxy=
+set CLIENT_ID=<your_client_id>
+set CLIENT_SECRET=<your_client_secret>
+```
+
+4. Start docker registry and authentication proxy
+```sh
+docker compose up
+```
+
+5. Open new cmd.exe terminal, repeat step 3
+
+6. Tag hello-world image as myfirstimage
+```sh
+docker image tag hello-world localhost:5043/myfirstimage
+```
+
+7. Push myfirstimage to the private registry localhost:5043
+```sh
+docker push localhost:5043/myfirstimage
+```

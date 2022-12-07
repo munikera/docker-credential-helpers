@@ -21,7 +21,7 @@ build-wincred: # build-wincred only
 	go build -trimpath -ldflags="$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=docker-credential-wincred" -o "$(DESTDIR)/docker-credential-wincred.exe" ./wincred/cmd/
 
 build-%: # build, can be one of build-osxkeychain build-pass build-secretservice build-wincred
-	go build -trimpath -ldflags="$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=docker-credential-$*" -o "$(DESTDIR)/docker-credential-$*.exe" ./$*/cmd/
+	go build -trimpath -ldflags="$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=docker-credential-$*" -o "$(DESTDIR)/docker-credential-$*" ./$*/cmd/
 
 # aliases for build-* targets
 .PHONY: osxkeychain secretservice pass wincred
